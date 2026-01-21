@@ -1,61 +1,34 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Accelerometer } from 'expo-sensors';
+import { View } from 'react-native';
+import { Link } from 'expo-router';
+import { AppText } from '@/components/atoms/AppText';
+import { Button } from '@/components/atoms/Button';
+import { Icon } from '@/components/atoms/Icon';
+import "@/global.css";
 
-export default function App() {
-  const [dice, setDice] = useState(1);
-  const [subscription, setSubscription] = useState<any>(null);
-
-  useEffect(() => {
-    Accelerometer.setUpdateInterval(300);
-
-    const sub = Accelerometer.addListener(({ x, y, z }) => {
-      const totalMovement = Math.abs(x) + Math.abs(y) + Math.abs(z);
-
-      // Detecta sacudida
-      if (totalMovement > 2.2) {
-        rollDice();
-      }
-    });
-
-    setSubscription(sub);
-
-    return () => {
-      sub && sub.remove();
-    };
-  }, []);
-
-  const rollDice = () => {
-    const random = Math.floor(Math.random() * 6) + 1;
-    setDice(random);
-  };
-
+export default function Index() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🎲 Dado</Text>
-      <Text style={styles.dice}>{dice}</Text>
-      <Text style={styles.text}>Sacude el teléfono para lanzar el dado</Text>
+    <View className="flex-1 bg-gradient-to-br from-purple-600 to-blue-600 items-center justify-center p-6">
+      <Icon name="🎲" size="xlarge" className="mb-4" />
+      
+      <AppText variant="title" bold className="mb-4 text-center">
+        GiveMentApp
+      </AppText>
+      
+      <AppText variant="body" color="light" className="mb-12 text-center px-4">
+        Lanza los dados y comenzemos a jugar
+      </AppText>
+      
+      <Link href="/games/dice" asChild>
+        <Button 
+          title="¿Jugamos?"
+          variant="primary"
+          size="large"
+        />
+      </Link>
+      
+      <AppText variant="caption" color="light" className="mt-8 text-center">
+        Sacude tu telefono para empezar
+      </AppText>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 32,
-    marginBottom: 20,
-  },
-  dice: {
-    fontSize: 100,
-  },
-  text: {
-    marginTop: 20,
-    fontSize: 16,
-    color: '#555',
-  },
-});
